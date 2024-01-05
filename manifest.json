@@ -1,0 +1,40 @@
+{
+  "name": "Rush",
+  "id": "1314610291182805977",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "main.html",
+  "menu": [
+  {
+    "name": "Vertical Fill",
+    "command": "autolayoutVecticalFill"
+  }, {
+    "name": "Horizontal Fill",
+    "command": "autolayoutHorizontalFill"
+  }, {
+    "name": "Both Fill",
+    "command": "autolayoutBothFill"
+  },
+  {
+    "separator": true
+  }, {
+    "name": "Vertical Hug",
+    "command": "autolayoutVecticalHug"
+  }, {
+    "name": "Horizontal Hug",
+    "command": "autolayoutHorizontalHug"
+  }, {
+    "name": "Both Hug",
+    "command": "autolayoutBothHug"
+  }],
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": [
+    "figma"
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}
