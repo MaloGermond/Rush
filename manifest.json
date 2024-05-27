@@ -26,6 +26,28 @@
   }, {
     "name": "Both Hug",
     "command": "autolayoutBothHug"
+  },
+  {
+    "separator": true
+  }, {
+    "name": "Mask selection",
+    "command": "maskSelection"
+  },
+  {
+    "separator": true
+  }, {
+    "name": "Apply style",
+    "command": "setStyle",
+    "parameters": [
+    {
+      "name": "style",
+      "key": "color",
+      "allowFreeform": true,
+      "optional": true
+    }]
+  }, {
+    "name": "Load style",
+    "command": "loadStyles"
   }],
   "capabilities": [],
   "enableProposedApi": false,

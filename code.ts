@@ -1,5 +1,6 @@
 // This plugin creates 5 rectangles on the screen.
-const numberOfRectangles = 5
+// let styles = figma.clientStorage.getAsync('styles') || [];
+
 
 // This file holds the main code for plugins. Code in this file has access to
 // the *figma document* via the figma global object.
@@ -34,8 +35,64 @@ if(figma.command === 'autolayoutBothHug') {
   autolayoutHug("Vertical");
 }
 
+if(figma.command === 'maskSelection') {
+  maskSelection()
+}
 
+
+// if(figma.command === 'setStyle') {
+//   setStyle()
+// }
+// if(figma.command === 'loadStyles') {
+//   getStyles()
+// }
+
+
+figma.on('run', ({ command, parameters }: RunEvent) => {
+  if(parameters === undefined) {
+    // Handle the case when parameters are not provided
+    // This could happen when the user didn't use the parameters UI
+    // You can choose to use default values or display an error message
+    console.warn("Parameters not provided. Using default values or handling accordingly.");
+    return;
+  }
+
+  switch (command) {
+    case "setStyle":
+      setStyle(parameters.style)
+      break
+  }
+})
 console.log(figma.command)
+
+function getStyles() {
+  // console.log(figma.getLocalPaintStyles())
+  // let output = new Array()
+  // figma.getLocalPaintStyles()
+  //   .map(style => output.push(style))
+  // // Save the updated styles array to client storage
+  // figma.clientStorage.setAsync('styles', styles);
+  // console.log({ styles })
+  return figma.getLocalPaintStyles()
+}
+
+function setStyle(style ? : string) {
+  // parameters in inputs
+  // https://www.figma.com/plugin-docs/plugin-parameters/
+
+  const styles = getStyles()
+
+  console.log(style)
+
+  console.log({
+    styles
+  })
+
+  return
+}
+
+// Debug command
+//console.log(figma.command)
 
 
 // function hello() {
@@ -43,9 +100,13 @@ console.log(figma.command)
 //   figma.notify("Hello")
 // }
 
+function gapAuto() {
+
+}
+
 function autolayoutHug(direction: string) {
   // Get the current selection in the Figma document
-  const selection = figma.currentPage.selection;
+  const selection = figma.currentPage.selection
 
   // Loop through the selected nodes
   for(const node of selection) {
@@ -62,15 +123,24 @@ function autolayoutHug(direction: string) {
   }
 }
 
+//https://www.figma.com/plugin-docs/api/properties/nodes-layoutmode/
+
 function autolayoutFill(direction: string) {
   // Layout size vertical
   //https://www.figma.com/plugin-docs/api/properties/nodes-layoutsizingvertical/#signature
 
   // Get the current selection in the Figma document
-  const selection = figma.currentPage.selection;
+  const selection = figma.currentPage.selection
 
   // Check if there is at least one selected node
   if(selection.length > 0) {
+
+    // const parentFrame = figma.createFrame()
+    // layoutMode === "HORIZONTAL"
+    // figma.group(selection, parent)
+    // parentFrame.counterAxisSizingMode = 'AUTO'
+    //selection.every(el => el.parent !== null && el.parent.type === "PAGE") ? figma.group(selection, parent) : null
+
     // Loop through the selected nodes
     for(const node of selection) {
 
@@ -110,6 +180,72 @@ function autolayoutFill(direction: string) {
     // Inform the user that no nodes are selected
     figma.notify("Please select an object to set to FILL.");
   }
+}
+
+// function resetComponent() {
+//   resetOverrides()
+// }
+
+function maskSelection() {
+
+  // Get the current selection
+  const selection = figma.currentPage.selection;
+
+  // console.log(selection)
+
+  // Ensure that the selection is not a group or a frame
+  let isGroup = false
+
+  if(selection[0].type === "GROUP" || selection[0].type === "FRAME") {
+    isGroup = true
+    figma.notify('Select inside group or frame');
+    figma.closePlugin();
+  }
+
+
+  // Ensure the parent of the first selected node is not null
+  const selectionParent = selection[0].parent;
+  if(!selectionParent) {
+    figma.notify('Cannot group layers without a valid parent');
+    figma.closePlugin();
+    return;
+  }
+
+  // Check if the selection contains more than one node
+  if(selection.length < 2) {
+    figma.notify('Please select at least two layers');
+    figma.closePlugin();
+    return;
+  }
+
+  // Ensure the selection is a group or frame
+  // if(selection[0].parent.type !== 'GROUP' && selection[0].parent.type !== 'FRAME') {
+  //   figma.notify('Please select layers within a group or frame');
+  //   figma.closePlugin();
+  //   return;
+  // }
+
+  // Get the parent of the selection
+  const parent = selection[0].parent as GroupNode | FrameNode;
+
+  const maskLayer = selection[0];
+
+  // Check if the last layer can be a mask
+  if(!('isMask' in maskLayer)) {
+    figma.notify('The last layer cannot be used as a mask');
+    figma.closePlugin();
+    return;
+  }
+
+  // Set the last layer as a mask
+  maskLayer.isMask = true;
+
+  // Create a group from the selection
+  const group = figma.group(selection, selectionParent);
+  group.name = 'Mask Layers';
+
+  // Notify the user and close the plugin
+  figma.notify('Mask applied successfully');
 }
 
 

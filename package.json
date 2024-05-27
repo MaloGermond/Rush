@@ -1,5 +1,5 @@
 {
-  "name": "My-shortcut",
+  "name": "rush",
   "version": "1.0.0",
   "description": "Your Figma Plugin",
   "main": "code.js",
@@ -8,9 +8,17 @@
     "watch": "npm run build -- --watch"
   },
   "author": "",
-  "license": "",
+  "license": "ISC",
   "devDependencies": {
     "@figma/plugin-typings": "^1.82.0",
     "typescript": "^5.3.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaloGermond/Rush.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MaloGermond/Rush/issues"
+  },
+  "homepage": "https://github.com/MaloGermond/Rush#readme"
 }
