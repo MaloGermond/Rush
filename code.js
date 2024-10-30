@@ -31,6 +31,12 @@ if (figma.command === 'autolayoutBothHug') {
 if (figma.command === 'maskSelection') {
     maskSelection();
 }
+if (figma.command === 'guideGrid') {
+    guideGrid();
+}
+if (figma.command === 'removeGuides') {
+    removeAllGuides();
+}
 // if(figma.command === 'setStyle') {
 //   setStyle()
 // }
@@ -176,8 +182,6 @@ function maskSelection() {
     //   figma.closePlugin();
     //   return;
     // }
-    // Get the parent of the selection
-    const parent = selection[0].parent;
     const maskLayer = selection[0];
     // Check if the last layer can be a mask
     if (!('isMask' in maskLayer)) {
@@ -185,13 +189,46 @@ function maskSelection() {
         figma.closePlugin();
         return;
     }
+    console.log(maskLayer.name);
     // Set the last layer as a mask
     maskLayer.isMask = true;
+    maskLayer.maskType = "LUMINANCE";
     // Create a group from the selection
     const group = figma.group(selection, selectionParent);
     group.name = 'Mask Layers';
     // Notify the user and close the plugin
     figma.notify('Mask applied successfully');
+}
+/*
+//
+//
+//  GRID GUIDE
+//
+//
+*/
+function guideGrid() {
+    const artboardWidth = 3584;
+    const artboardHeight = 1536;
+    const gap = 128;
+    const page = figma.currentPage;
+    for (let i = 0; i < 8; i++) {
+        addNewGuide(page, i * artboardWidth, 'X');
+        addNewGuide(page, i * artboardWidth + gap, 'X');
+    }
+    for (let j = 0; j < 8; j++) {
+        addNewGuide(page, j * artboardHeight, 'Y');
+        addNewGuide(page, j * artboardHeight + gap, 'Y');
+    }
+}
+// Fonction pour ajouter un nouveau guide à une position X ou Y
+function addNewGuide(page, position, axis) {
+    const guide = { axis: axis, offset: position }; // Définit explicitement axis et offset
+    // Ajoute le nouveau guide en créant une nouvelle liste de guides
+    page.guides = page.guides.concat(guide);
+}
+// Fonction pour supprimer tous les guides d'une page
+function removeAllGuides() {
+    figma.currentPage.guides = []; // Assigne un tableau vide à la propriété guides pour supprimer tous les guides
 }
 // Make sure to close the plugin when you're done. Otherwise the plugin will
 // keep running, which shows the cancel button at the bottom of the screen.

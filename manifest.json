@@ -48,6 +48,15 @@
   }, {
     "name": "Load style",
     "command": "loadStyles"
+  },
+  {
+    "separator": true
+  }, {
+    "name": "Create Guide Grid",
+    "command": "guideGrid"
+  }, {
+    "name": "Remove all page guides",
+    "command": "removeGuides"
   }],
   "capabilities": [],
   "enableProposedApi": false,
