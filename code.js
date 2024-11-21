@@ -8,6 +8,44 @@
 // figma.showUI(__html__)
 //figma.notify("====== Starting ======")
 // autolayoutVecticalFill()
+// ACTIVATE THE VM MACHINE ON FIGMA
+//
+// figma.on('run', ({ command, parameters }: RunEvent) => {
+//   switch (command) {
+//     case "autolayoutHorizontalFill":
+//       autolayoutFill("Vertical");
+//       break
+//     case "autolayoutVecticalFill":
+//       autolayoutFill("Horizontal")
+//       break
+//     case "autolayoutBothFill":
+//       autolayoutFill("Horizontal");
+//       autolayoutFill("Vertical");
+//       break
+//     case "autolayoutHorizontalHug":
+//       autolayoutHug("Vertical");
+//       break
+//     case "autolayoutVecticalHug":
+//       autolayoutHug("Horizontal");
+//       break
+//     case "autolayoutBothHug":
+//       autolayoutHug("Horizontal");
+//       autolayoutHug("Vertical");
+//       break
+//     case "maskSelection":
+//       maskSelection();
+//       break
+//     case "guideGrid":
+//       guideGrid();
+//       break
+//     case "removeGuides":
+//       removeAllGuides();
+//       break
+//     default:
+//       console.warn(`Unknown command: ${command}`);
+//       break; // Handle any unexpected commands
+//   }
+// })
 if (figma.command === 'autolayoutHorizontalFill') {
     autolayoutFill("Vertical");
 }
@@ -37,27 +75,7 @@ if (figma.command === 'guideGrid') {
 if (figma.command === 'removeGuides') {
     removeAllGuides();
 }
-// if(figma.command === 'setStyle') {
-//   setStyle()
-// }
-// if(figma.command === 'loadStyles') {
-//   getStyles()
-// }
-figma.on('run', ({ command, parameters }) => {
-    if (parameters === undefined) {
-        // Handle the case when parameters are not provided
-        // This could happen when the user didn't use the parameters UI
-        // You can choose to use default values or display an error message
-        console.warn("Parameters not provided. Using default values or handling accordingly.");
-        return;
-    }
-    switch (command) {
-        case "setStyle":
-            setStyle(parameters.style);
-            break;
-    }
-});
-console.log(figma.command);
+//console.log(figma.command)
 function getStyles() {
     // console.log(figma.getLocalPaintStyles())
     // let output = new Array()
@@ -206,16 +224,35 @@ function maskSelection() {
 //
 //
 */
-function guideGrid() {
+// Les param que je n'arrive pas à utiliser...
+// {
+//     "name": "Create Guide Grid",
+//     "command": "guideGrid",
+//     "parameters":[{
+//       "name": "columns",
+//       "description": "Number of columns",
+//       "key": "columns",
+//       "allowFreeform": true,
+//       "optional": true
+//     },
+//     {
+//       "name": "rows",
+//       "description": "Number of rows",
+//       "key": "rows",
+//       "allowFreeform": true,
+//       "optional": true
+//     }]
+//   },
+function guideGrid(columns = 11, rows = 5) {
     const artboardWidth = 3584;
     const artboardHeight = 1536;
     const gap = 128;
     const page = figma.currentPage;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < columns; i++) {
         addNewGuide(page, i * artboardWidth, 'X');
         addNewGuide(page, i * artboardWidth + gap, 'X');
     }
-    for (let j = 0; j < 8; j++) {
+    for (let j = 0; j < rows; j++) {
         addNewGuide(page, j * artboardHeight, 'Y');
         addNewGuide(page, j * artboardHeight + gap, 'Y');
     }

@@ -12,6 +12,44 @@
 //figma.notify("====== Starting ======")
 // autolayoutVecticalFill()
 
+// ACTIVATE THE VM MACHINE ON FIGMA
+//
+// figma.on('run', ({ command, parameters }: RunEvent) => {
+//   switch (command) {
+//     case "autolayoutHorizontalFill":
+//       autolayoutFill("Vertical");
+//       break
+//     case "autolayoutVecticalFill":
+//       autolayoutFill("Horizontal")
+//       break
+//     case "autolayoutBothFill":
+//       autolayoutFill("Horizontal");
+//       autolayoutFill("Vertical");
+//       break
+//     case "autolayoutHorizontalHug":
+//       autolayoutHug("Vertical");
+//       break
+//     case "autolayoutVecticalHug":
+//       autolayoutHug("Horizontal");
+//       break
+//     case "autolayoutBothHug":
+//       autolayoutHug("Horizontal");
+//       autolayoutHug("Vertical");
+//       break
+//     case "maskSelection":
+//       maskSelection();
+//       break
+//     case "guideGrid":
+//       guideGrid();
+//       break
+//     case "removeGuides":
+//       removeAllGuides();
+//       break
+//     default:
+//       console.warn(`Unknown command: ${command}`);
+//       break; // Handle any unexpected commands
+//   }
+// })
 
 if(figma.command === 'autolayoutHorizontalFill') {
   autolayoutFill("Vertical");
@@ -48,30 +86,8 @@ if(figma.command === 'removeGuides') {
 }
 
 
-// if(figma.command === 'setStyle') {
-//   setStyle()
-// }
-// if(figma.command === 'loadStyles') {
-//   getStyles()
-// }
 
-
-figma.on('run', ({ command, parameters }: RunEvent) => {
-  if(parameters === undefined) {
-    // Handle the case when parameters are not provided
-    // This could happen when the user didn't use the parameters UI
-    // You can choose to use default values or display an error message
-    console.warn("Parameters not provided. Using default values or handling accordingly.");
-    return;
-  }
-
-  switch (command) {
-    case "setStyle":
-      setStyle(parameters.style)
-      break
-  }
-})
-console.log(figma.command)
+//console.log(figma.command)
 
 function getStyles() {
   // console.log(figma.getLocalPaintStyles())
@@ -265,19 +281,39 @@ function maskSelection() {
 //
 */
 
-function guideGrid(){
+// Les param que je n'arrive pas à utiliser...
+// {
+//     "name": "Create Guide Grid",
+//     "command": "guideGrid",
+//     "parameters":[{
+//       "name": "columns",
+//       "description": "Number of columns",
+//       "key": "columns",
+//       "allowFreeform": true,
+//       "optional": true
+//     },
+//     {
+//       "name": "rows",
+//       "description": "Number of rows",
+//       "key": "rows",
+//       "allowFreeform": true,
+//       "optional": true
+//     }]
+//   },
+
+function guideGrid(columns: number = 11, rows: number = 5){
   const artboardWidth = 3584
   const artboardHeight = 1536
   const gap = 128
 
   const page = figma.currentPage;
 
-  for(let i=0; i<8; i++){
+  for(let i=0; i<columns; i++){
     addNewGuide(page, i*artboardWidth, 'X');
     addNewGuide(page, i*artboardWidth+gap, 'X');
   }
 
-  for(let j=0; j<8; j++){
+  for(let j=0; j<rows; j++){
     addNewGuide(page, j*artboardHeight, 'Y');
     addNewGuide(page, j*artboardHeight+gap, 'Y');
   }
@@ -285,6 +321,11 @@ function guideGrid(){
 
 }
 
+// Définition de l'interface Guide
+interface Guide {
+  readonly axis: "X" | "Y";
+  readonly offset: number;
+}
 // Fonction pour ajouter un nouveau guide à une position X ou Y
 function addNewGuide(page: PageNode, position: number, axis: "X" | "Y") {
   const guide: Guide = { axis: axis, offset: position }; // Définit explicitement axis et offset
@@ -297,6 +338,7 @@ function addNewGuide(page: PageNode, position: number, axis: "X" | "Y") {
 function removeAllGuides() {
   figma.currentPage.guides = []; // Assigne un tableau vide à la propriété guides pour supprimer tous les guides
 }
+
 
 // Make sure to close the plugin when you're done. Otherwise the plugin will
 // keep running, which shows the cancel button at the bottom of the screen.
